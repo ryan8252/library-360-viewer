@@ -22,6 +22,8 @@ const scenes = Array.from({ length: 8 }, (_, index) => {
 const viewerContainer = document.querySelector('#viewer');
 const currentSceneElement = document.querySelector('#current-scene');
 const sceneCounterElement = document.querySelector('#scene-counter');
+const previousSceneButton = document.querySelector('#previous-scene');
+const previousSceneLabel = document.querySelector('#previous-scene-label');
 const nextSceneButton = document.querySelector('#next-scene');
 const nextSceneLabel = document.querySelector('#next-scene-label');
 const annotationModeButton = document.querySelector('#annotation-mode');
@@ -39,6 +41,8 @@ if (
   !viewerContainer
   || !currentSceneElement
   || !sceneCounterElement
+  || !previousSceneButton
+  || !previousSceneLabel
   || !nextSceneButton
   || !nextSceneLabel
   || !annotationModeButton
@@ -109,6 +113,10 @@ function getNextSceneIndex(index) {
   return (index + 1) % scenes.length;
 }
 
+function getPreviousSceneIndex(index) {
+  return (index - 1 + scenes.length) % scenes.length;
+}
+
 function getTotalAnnotationCount() {
   return annotationsByScene.reduce((total, annotations) => total + annotations.length, 0);
 }
@@ -116,11 +124,14 @@ function getTotalAnnotationCount() {
 function updateTourInterface() {
   const currentScene = scenes[currentSceneIndex];
   const nextScene = scenes[getNextSceneIndex(currentSceneIndex)];
+  const previousScene = scenes[getPreviousSceneIndex(currentSceneIndex)];
   const currentNumber = String(currentSceneIndex + 1).padStart(2, '0');
   const totalNumber = String(scenes.length).padStart(2, '0');
 
   currentSceneElement.textContent = currentScene.name;
   sceneCounterElement.textContent = `${currentNumber} / ${totalNumber}`;
+  previousSceneLabel.textContent = `返回${previousScene.name}`;
+  previousSceneButton.setAttribute('aria-label', `上一個地點：${previousScene.name}`);
   nextSceneLabel.textContent = `前往${nextScene.name}`;
   nextSceneButton.setAttribute('aria-label', `前往${nextScene.name}`);
 }
@@ -223,12 +234,11 @@ function resetAnnotationEditorState() {
   viewer.startKeyboardControl();
 }
 
-async function goToNextScene() {
+async function changeScene(nextSceneIndex, activeButton) {
   if (isChangingScene) {
     return;
   }
 
-  const nextSceneIndex = getNextSceneIndex(currentSceneIndex);
   const nextScene = scenes[nextSceneIndex];
 
   setAnnotationPlacementMode(false);
@@ -237,8 +247,9 @@ async function goToNextScene() {
 
   isChangingScene = true;
   nextSceneButton.disabled = true;
+  previousSceneButton.disabled = true;
   annotationModeButton.disabled = true;
-  nextSceneButton.classList.add('is-loading');
+  activeButton.classList.add('is-loading');
   viewerContainer.setAttribute('aria-busy', 'true');
 
   try {
@@ -260,8 +271,9 @@ async function goToNextScene() {
   } finally {
     isChangingScene = false;
     nextSceneButton.disabled = false;
+    previousSceneButton.disabled = false;
     annotationModeButton.disabled = false;
-    nextSceneButton.classList.remove('is-loading');
+    activeButton.classList.remove('is-loading');
     viewerContainer.removeAttribute('aria-busy');
     renderSceneAnnotations();
   }
@@ -393,6 +405,11 @@ document.addEventListener('keydown', (event) => {
 });
 
 viewer.addEventListener('ready', renderSceneAnnotations, { once: true });
-nextSceneButton.addEventListener('click', goToNextScene);
+nextSceneButton.addEventListener('click', () => {
+  changeScene(getNextSceneIndex(currentSceneIndex), nextSceneButton);
+});
+previousSceneButton.addEventListener('click', () => {
+  changeScene(getPreviousSceneIndex(currentSceneIndex), previousSceneButton);
+});
 updateTourInterface();
 updateAnnotationToolbar();

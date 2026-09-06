@@ -91,7 +91,7 @@ button {
   position: absolute;
   z-index: 20;
   bottom: max(72px, calc(env(safe-area-inset-bottom) + 66px));
-  left: 50%;
+  left: calc(50% + 78px);
   display: grid;
   width: 150px;
   padding: 0;
@@ -103,6 +103,10 @@ button {
   cursor: pointer;
   transform: translateX(-50%);
   -webkit-tap-highlight-color: transparent;
+}
+
+.navigation-hotspot--previous {
+  left: calc(50% - 78px);
 }
 
 .navigation-hotspot__arrow {
