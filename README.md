@@ -6,30 +6,12 @@
 
 ## 2. 要怎麼安裝與啟動
 
-以下以 Windows PowerShell 為例。先安裝 [Git](https://git-scm.com/downloads) 與 [Node.js](https://nodejs.org/)（22.x 需為 22.12 以上，或使用 24.x），安裝完成後重新開啟 PowerShell。
+適用於 Windows 10／11 的 64 位元電腦（x64 或 ARM64）。不需要先安裝 Git、Node.js，也不需要輸入指令。
 
-確認安裝成功：
+1. 在 GitHub 專案頁面點選 **Code → Download ZIP**，下載專案（私人專案需先登入有權限的帳號）。
+2. 在下載的 ZIP 檔案上按右鍵，選擇 **解壓縮全部**，解壓縮到自己可以寫入的資料夾。
+3. 開啟解壓縮後的專案資料夾，雙擊 **`start.bat`**。
 
-```powershell
-git --version
-node --version
-npm.cmd --version
-```
+第一次啟動需要網路連線，程式會自動下載 Node.js 並安裝所需套件，完成後自動開啟瀏覽器。所需工具會放在專案資料夾內，不需要管理員權限；如果圖書館電腦限制執行程式或 PowerShell，仍需由館方開放。
 
-下載專案並安裝套件（需要網路連線；私人儲存庫需登入有權限的 GitHub 帳號）：
-
-```powershell
-git clone https://github.com/ryan8252/library-360-viewer.git
-cd library-360-viewer
-npm.cmd ci
-```
-
-啟動網頁：
-
-```powershell
-npm.cmd run dev -- --host 127.0.0.1
-```
-
-使用瀏覽器開啟終端機顯示的網址，通常是 `http://127.0.0.1:5173`。使用期間保持終端機開啟，結束時按 `Ctrl+C`。
-
-之後再次使用，只需在專案資料夾開啟 PowerShell，執行上述啟動指令，不需要重新安裝套件。
+之後只要再次雙擊 **`start.bat`**，就能開啟網頁，不需要重新安裝。使用期間請保持啟動視窗開啟，結束時關閉視窗或按 `Ctrl+C`。若瀏覽器沒有自動開啟，請開啟視窗中顯示的本機網址。
